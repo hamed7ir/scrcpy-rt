@@ -1,0 +1,67 @@
+# ---------------------------------------------------------------------------
+# scrcpy-rt
+# ---------------------------------------------------------------------------
+
+# Build outputs. The shipping binaries are RELEASE ASSETS, not tracked files.
+build/
+dist/
+*.obj
+*.lib
+*.exe
+*.dll
+*.pdb
+*.res
+*.zip
+*.tar.*
+*.log
+# ... except this one. It is a SHELL SCRIPT named lib.exe, because FFmpeg's makedef
+# falls back to a hardcoded lib.exe when $AR is unset and looks for it on PATH.
+# NOTE: gitignore has no trailing comments -- a `!pattern  # why` line silently matches
+# nothing, which is how this exception was dead until it was checked with check-ignore.
+!cross/bin/lib.exe
+
+# Vendored upstream sources. Reconstruct them with scripts/fetch-*.sh -- the pinned tag and
+# sha256 are in there. Redistributing somebody else's tree here would make this repo
+# unreviewable and the patch count meaningless.
+deps/
+
+# Working notes, batch specifications and device-trip reports. These carry the project's
+# history, not its product, and they are where the machine-specific strings live.
+BATCH-*.md
+reports/
+STAGE-*-RESULTS.md
+TRIP-*-RESULTS.md
+STATE.md
+RECON.md
+RECIPE.md
+notes/
+CLAUDE.md
+
+# ⚠ THIRD-PARTY PREBUILT BINARIES -- MUST NOT BE PUBLISHED.
+# Somebody else's 2013 ARM32 builds, used here only as reference instruments: the old adb
+# answered "can a Surface RT drive a modern phone?" and the old FFmpeg answered "can a Tegra 3
+# decode H.264 at all?". Their licence and provenance are unknown, so they are not ours to
+# redistribute. The README says what they were and where they came from.
+adb-1.0.31-winarm32/
+adb-1.0.31-winarm32.zip
+ffmpeg2.1_ARM/
+ffmpeg2.1_ARM.zip
+
+# Staged copies of the sibling batches, which now live in the real repos. A duplicate that
+# drifts from the original is worse than no copy.
+new-repos/
+
+# Editor / OS noise
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+*.swp
+*~
+
+# The scrub list names real identifiers -- never commit it.
+.scrub-discriminators
+
+# Frozen copies of a script, made so it can be edited while a long run is in flight.
+# A killed run can leave one behind, and `git add -A` would otherwise stage it.
+scripts/.*

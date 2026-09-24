@@ -1,0 +1,46 @@
+# Meson cross file -- armv7-pc-windows-msvc via rt2's clang-cl.
+#
+# NOT PART OF ANY SUPPORTED BUILD. scrcpy-rt builds by hand (scripts/catalogue-scrcpy.sh and
+# scripts/link-scrcpy.sh); this file is the record of one timeboxed attempt to drive scrcpy's
+# own Meson build instead, kept because the rc.exe finding below is worth having written down.
+#
+# THE ONE FILE IN THIS REPOSITORY THAT IS NOT PARAMETERISED. A Meson cross file is read as
+# literal data -- it has no variable expansion and cannot see the environment -- so the paths
+# below are the original machine's and would have to be edited by hand. Everything else in
+# this repo takes its paths from config.sh. If you revive this path, generate this file rather
+# than editing it.
+#
+# The '@rsp' form in the compiler exelist is not decoration. Meson's `--internal rc` wrapper
+# splats the whole compiler exelist after --cl, and argparse's nargs='+' will not absorb a token
+# starting with '--', so an inline --target= falls through to rc.exe and dies with RC1106.
+# A response file survives being splatted because '@' is not a prefix character.
+# Measured in lite-xl Stage 2; do not "simplify" it away.
+
+[binaries]
+c          = ['D:/repo/llvm-rt/stage2/bin/clang-cl.exe', '@D:/repo/scrcpy-rt/cross/target-arm32.rsp']
+cpp        = ['D:/repo/llvm-rt/stage2/bin/clang-cl.exe', '@D:/repo/scrcpy-rt/cross/target-arm32.rsp']
+ar         = 'D:/Program Files/vs22buildtools/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/lib.exe'
+windres    = 'D:/Windows Kits/10/bin/10.0.19041.0/x64/rc.exe'
+strip      = 'D:/repo/llvm-rt/stage2/bin/llvm-strip.exe'
+
+[built-in options]
+c_args      = ['/vctoolsdir', 'D:/Program Files/vs22buildtools/VC/Tools/MSVC/14.44.35207',
+               '/winsdkdir', 'D:/Windows Kits/10',
+               '/winsdkversion', '10.0.19041.0']
+c_link_args = ['/MACHINE:ARM',
+               '/LIBPATH:D:/Program Files/vs22buildtools/VC/Tools/MSVC/14.44.35207/lib/arm',
+               '/LIBPATH:D:/Windows Kits/10/Lib/10.0.19041.0/ucrt/arm',
+               '/LIBPATH:D:/Windows Kits/10/Lib/10.0.19041.0/um/arm']
+b_vscrt     = 'mt'
+
+[properties]
+# no pkg-config binary exists on this box; point the search at the .pc files we do have,
+# in case meson can be persuaded to use an internal resolver
+pkg_config_libdir = ['D:/repo/ffmpeg-rt/dist/shared/lib/pkgconfig',
+                     'D:/repo/scrcpy-rt/build/sdl3-arm32-prefix/lib/pkgconfig']
+
+[host_machine]
+system     = 'windows'
+cpu_family = 'arm'
+cpu        = 'armv7'
+endian     = 'little'

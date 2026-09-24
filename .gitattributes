@@ -1,0 +1,15 @@
+# Line endings. Store everything as LF, and check it out as LF on every platform.
+#
+# This is not a style preference. The build shell is MSYS2 bash, and a .sh file checked out
+# with CRLF fails at its first line with `$'\r': command not found` -- which reads like a
+# syntax error in the script rather than what it is. Git's default on Windows
+# (core.autocrlf=true) produces exactly that on a fresh clone.
+* text=auto eol=lf
+
+# The exceptions: Windows tools that genuinely want CRLF.
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.inf text eol=crlf
+
+# Patches must reach `git apply` byte for byte. No conversion, in either direction.
+*.patch -text
